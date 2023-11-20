@@ -153,20 +153,20 @@
                     nextInput.focus();
                 }
             }
-            document.getElementById('palavraFormada').value = obterPalavraFormada();
+            document.getElementById('palavraFormada').value = getFormedWord();
             currentInput.addEventListener('keyup', function(event) {
                 if (event.key === 'Enter') {
                     async function handleEnter() {
-                        let objectResponse = await validarPalavra();
+                        let objectResponse = await validateWord();
                         if (objectResponse.haveResults) {
                             if (objectResponse.message !== null) {
                                 disableAllInputs();
                                 return;
                             }
-                            habilitarDisableInputs(currentInputIndex);
+                            enableDisableInputs(currentInputIndex);
                             objectSequencia.minSequencia = nextInputIndex;
                             objectSequencia.maxSequencia = nextInputIndex + 4;
-                            removerDisableInputs(nextInputIndex);
+                            removeDisableInputs(nextInputIndex);
                             if (nextInput) {
                                 nextInput.focus();
                             }
@@ -181,7 +181,7 @@
 
 
 
-    function habilitarDisableInputs(currentInputIndex){
+    function enableDisableInputs(currentInputIndex){
         var parada = currentInputIndex - 5;
         for (let i = currentInputIndex; i > parada; i--) {
             var input = document.querySelector('input[name="quadrado' + i + '"]');
@@ -189,14 +189,14 @@
         }
     }
 
-    function removerDisableInputs(nextInputIndex){
+    function removeDisableInputs(nextInputIndex){
         for (let i = nextInputIndex; i <= (nextInputIndex + 4); i++) {
             document.querySelector('input[name="quadrado' + i + '"]').removeAttribute('disabled');
         }
 
     }
 
-    function validarPalavra() {
+    function validateWord() {
         var palavra = document.getElementById('palavraFormada').value;
         var options = {
             method: 'POST',
@@ -255,10 +255,8 @@
                 };
             });
     }
-
-
-
-    function obterPalavraFormada() {
+git
+    function getFormedWord() {
         var inputs = document.querySelectorAll('input[name^="quadrado"]');
         var palavra = '';
 
