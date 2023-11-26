@@ -118,17 +118,17 @@
 
 <script>
 
+    let cubeGroup = 0;
     let indexInputNow = 0;
-
-    let objectSequencia = {
-        minSequencia: 0,
-        maxSequencia: 0
+    let getGroups = {
+        group: 1,
+        start: 1,
+        end: 5
     }
 
     disableAllInputs();
 
     for (let i = 1; i <= 5; i++) {
-        console.log('entrei aqui dnv no for maldito');
         document.querySelector('input[name="quadrado' + i + '"]').removeAttribute('disabled');
     }
 
@@ -164,8 +164,6 @@
                                 return;
                             }
                             enableDisableInputs(currentInputIndex);
-                            objectSequencia.minSequencia = nextInputIndex;
-                            objectSequencia.maxSequencia = nextInputIndex + 4;
                             removeDisableInputs(nextInputIndex);
                             if (nextInput) {
                                 nextInput.focus();
@@ -178,8 +176,6 @@
             });
         }
     }
-
-
 
     function enableDisableInputs(currentInputIndex){
         var parada = currentInputIndex - 5;
@@ -224,14 +220,24 @@
                     };
                 }
 
+                cubeGroup++;
+                setActualGroup(cubeGroup);
+
+                console.log(getGroups);
                 responseData.forEach(function (item) {
                     let quadradoIndex = item.indexDigitado;
 
-                    let quadrado = document.querySelector('.word-container').children[(quadradoIndex + 1)];
-                    let input = document.querySelector('input[name="quadrado' + (quadradoIndex + 1) + '"]');
+                    let quadrado = undefined;
+                    let input = undefined;
 
-                    quadrado.style.backgroundColor = '';
-                    input.style.backgroundColor = '';
+                    quadrado = document.querySelector('.word-container').children[(quadradoIndex + getGroups.start)];
+                    if (cubeGroup === 2) {
+                        console.log(item);
+                        console.log(quadradoIndex);
+                        console.log(getGroups.start);
+                        console.log(quadradoIndex + getGroups.start);
+                    }
+                    input = document.querySelector('input[name="quadrado' + (quadradoIndex + getGroups.start) + '"]');
 
                     if (item.posicaoCorreta) {
                         quadrado.style.backgroundColor = '#3aa394';
@@ -242,6 +248,7 @@
                     }
                 });
 
+                let palavraFormada = document.getElementById('palavraFormada').value = '';
                 return {
                     haveResults: true,
                     message: null,
@@ -255,17 +262,47 @@
                 };
             });
     }
-git
+
+    function setActualGroup(cubeGroup){
+        if (cubeGroup === 1){
+            getGroups.group = cubeGroup;
+            getGroups.start = 1;
+            getGroups.end = 5;
+        } else if(cubeGroup == 2){
+            getGroups.group = cubeGroup;
+            getGroups.start = 6;
+            getGroups.end = 10;
+        } else if(cubeGroup == 3){
+            getGroups.group = cubeGroup;
+            getGroups.start = 11;
+            getGroups.end = 15;
+        } else if(cubeGroup == 4){
+            getGroups.group = cubeGroup;
+            getGroups.start = 16;
+            getGroups.end = 20;
+        } else if(cubeGroup == 5){
+            getGroups.group = cubeGroup;
+            getGroups.start = 21;
+            getGroups.end = 25;
+        } else if(cubeGroup == 6){
+            getGroups.group = cubeGroup;
+            getGroups.start = 26;
+            getGroups.end = 30;
+        }
+    }
+
+
     function getFormedWord() {
-        var inputs = document.querySelectorAll('input[name^="quadrado"]');
         var palavra = '';
 
-        inputs.forEach(function(input) {
+        for (let i = getGroups.start; i <= getGroups.end; i++) {
+            let input = document.querySelector('input[name="quadrado' + i + '"]');
             palavra += input.value;
-        });
+        }
 
         return palavra;
     }
+
 
     function handleBackspace(currentInput, event) {
         var currentInputIndex = parseInt(currentInput.name.charAt(currentInput.name.length - 1), 10);
