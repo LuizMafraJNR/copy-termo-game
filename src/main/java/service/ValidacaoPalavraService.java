@@ -21,7 +21,7 @@ public class ValidacaoPalavraService {
 
         if (palavraDigitada.equals(palavraSorteada)) {
             JSONObject resultadoValidacao = new JSONObject();
-            resultadoValidacao.put("message", "Parabéns, você acertou a palavra!");
+            resultadoValidacao.put("message", "Parabens, voce acertou a palavra!");
             return resultadoValidacao;
         } else {
             return validarCaracteres(palavraSorteada, palavraDigitada);
@@ -47,6 +47,8 @@ public class ValidacaoPalavraService {
                     boolean estaNaPosicaoCorreta = indexSorteado == indexDigitado;
 
                     JSONObject caracterJSON = new JSONObject();
+
+
                     try {
                         caracterJSON.put("char", Character.toString(caracter));
                         caracterJSON.put("posicaoCorreta", estaNaPosicaoCorreta);

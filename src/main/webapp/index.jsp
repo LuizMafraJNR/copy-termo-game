@@ -118,7 +118,9 @@
 
 <script>
 
-    let cubeGroup = 0;
+    let acertou = false;
+
+    let cubeGroup = 1;
     let indexInputNow = 0;
     let getGroups = {
         group: 1,
@@ -193,6 +195,7 @@
     }
 
     function validateWord() {
+
         var palavra = document.getElementById('palavraFormada').value;
         var options = {
             method: 'POST',
@@ -210,45 +213,24 @@
                 return response.json();
             })
             .then(data => {
-                let responseData = data.validacao;
-
-                if (responseData === undefined) {
-                    let message = data.message;
-                    return {
-                        haveResults: true,
-                        message: message,
-                    };
+                let messageCorreta = data.message;
+                if (messageCorreta !== undefined) {
+                    paintBoxesWin();
+                    alert(messageCorreta);
+                    disableAllInputs();
+                    return;
                 }
 
-                cubeGroup++;
-                setActualGroup(cubeGroup);
-
-                console.log(getGroups);
+                let responseData = data.validacao;
                 responseData.forEach(function (item) {
                     let quadradoIndex = item.indexDigitado;
-
-                    let quadrado = undefined;
-                    let input = undefined;
-
-                    quadrado = document.querySelector('.word-container').children[(quadradoIndex + getGroups.start)];
-                    if (cubeGroup === 2) {
-                        console.log(item);
-                        console.log(quadradoIndex);
-                        console.log(getGroups.start);
-                        console.log(quadradoIndex + getGroups.start);
-                    }
-                    input = document.querySelector('input[name="quadrado' + (quadradoIndex + getGroups.start) + '"]');
-
                     if (item.posicaoCorreta) {
-                        quadrado.style.backgroundColor = '#3aa394';
-                        input.style.backgroundColor = '#3aa394';
+                        paintBox(quadradoIndex, '#3aa394');
+
                     } else {
-                        quadrado.style.backgroundColor = '#d3ad69';
-                        input.style.backgroundColor = '#d3ad69';
+                        paintBox(quadradoIndex, '#d3ad69');
                     }
                 });
-
-                let palavraFormada = document.getElementById('palavraFormada').value = '';
                 return {
                     haveResults: true,
                     message: null,
@@ -260,7 +242,17 @@
                     haveResults: false,
                     message: error.message,
                 };
-            });
+            })
+            .finally(() => {
+                if (acertou !== true && cubeGroup === 6) {
+                    disableAllInputs();
+                    alert('Fim de jogo');
+                    return;
+                }
+                document.getElementById('palavraFormada').value = '';
+                cubeGroup++;
+                setActualGroup(cubeGroup);
+            })
     }
 
     function setActualGroup(cubeGroup){
@@ -299,7 +291,6 @@
             let input = document.querySelector('input[name="quadrado' + i + '"]');
             palavra += input.value;
         }
-
         return palavra;
     }
 
@@ -314,6 +305,26 @@
             if (prevInput) {
                 prevInput.focus();
             }
+        }
+    }
+
+    function paintBox(index, color) {
+        let quadrado = undefined;
+        let input = undefined;
+        input = document.querySelector('input[name="quadrado' + (index + getGroups.start) + '"]');
+        quadrado = input.closest('.letter-box');
+        quadrado.style.backgroundColor = color;
+        input.style.backgroundColor = color;
+    }
+
+    function paintBoxesWin(){
+        let quadrado = undefined;
+        let input = undefined;
+        for (let i = getGroups.start; i <= getGroups.end; i++) {
+            input = document.querySelector('input[name="quadrado' + i + '"]');
+            quadrado = input.closest('.letter-box');
+            quadrado.style.backgroundColor = '#3aa394';
+            input.style.backgroundColor = '#3aa394';
         }
     }
 </script>
